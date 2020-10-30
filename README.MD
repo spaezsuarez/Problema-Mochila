@@ -10,7 +10,7 @@ Sergio David Paez Suarez
 
 En la carpeta doc se encontrara documentacion sobre el diseño para este programa (Aun realizandose)
 
-## Pre-requisitos
+## Ejecucion
 
 Otorgarle permisos de ejecucion al script de bash para compilar y ejecutar el proyecto, sino simplemente
 compilar la clase main con `javac Main.java -d bin`
