@@ -3,6 +3,7 @@ package view;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import java.awt.Font;
 
 public class EntradaArticulo extends JPanel {
 
@@ -18,8 +19,9 @@ public class EntradaArticulo extends JPanel {
         for (int i = 0; i < articulos.length; i++) {
             for (int j = 0; j < articulos[i].length; j++) {
                 articulos[i][j] = new JTextField();
-                articulos[i][j].setBounds(j * 75 + 6, i * 75 + 6, 50, 50);
+                articulos[i][j].setBounds(j * 60 + 6, i * 60 + 6, 50, 50);
                 articulos[i][j].setHorizontalAlignment(JLabel.CENTER);
+                articulos[i][j].setFont(new Font("Arial",Font.BOLD,15));
                 add(articulos[i][j]);
             }
         }
@@ -30,6 +32,10 @@ public class EntradaArticulo extends JPanel {
     public void removeInputElements() {
         removeAll();
         repaint();
+    }
+
+    public JTextField[][] getArticulos(){
+        return articulos;
     }
 
     

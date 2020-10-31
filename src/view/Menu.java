@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.*;
+//Controladores
+import controllers.ArticuloController;
 
 public class Menu extends JFrame implements ActionListener {
 
@@ -71,12 +73,14 @@ public class Menu extends JFrame implements ActionListener {
         btnGrilla.setSize(new Dimension(150, 40));
         btnGrilla.setLocation(350, 170);
         btnGrilla.setFont(new Font("Arial", Font.BOLD, 15));
+        btnGrilla.setFocusable(false);
         btnGrilla.addActionListener(this);
         add(btnGrilla);
 
         btnLimpiar.setSize(new Dimension(150, 40));
         btnLimpiar.setLocation(520, 170);
         btnLimpiar.setFont(new Font("Arial", Font.BOLD, 15));
+        btnLimpiar.setFocusable(false);
         btnLimpiar.addActionListener(this);
         add(btnLimpiar);
 
@@ -84,6 +88,7 @@ public class Menu extends JFrame implements ActionListener {
 
     public void initTemplate() {
         setLayout(null);
+        setTitle("Menu");
         setSize(new Dimension(ancho, alto));
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -94,29 +99,53 @@ public class Menu extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
+
+        int numeroElementos = 0;
+        int pesoMaximo = 0;
+
         if (event.getSource() == btnGrilla) {
+
             try{
 
-                int numeroElementos = Integer.parseInt(inputNumeroArticulos.getText());
+                numeroElementos = Integer.parseInt(inputNumeroArticulos.getText());
 
                 panel = new EntradaArticulo(numeroElementos);
                 panel.initInputElements();
                 panel.setSize(new Dimension(ancho, 200));
                 panel.setLocation(0, 270);
-
+                //panel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
                 add(panel);
                 repaint();
 
             }catch(NumberFormatException  e){
-                JOptionPane.showMessageDialog(null, "Ingrese solo numeros", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Ingrese los numeros", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }else if(event.getSource() == btnLimpiar ){
+
             try{
                 panel.removeInputElements();
             }catch(NullPointerException e){}
 
         }else if(event.getSource() == btnStart){
-            
+
+            try{
+
+                numeroElementos = Integer.parseInt(inputNumeroArticulos.getText())+1;
+                pesoMaximo = Integer.parseInt(inputPesoMaximo.getText())+1;
+
+                System.out.println("elementos: " + numeroElementos);
+                System.out.println("Peso Maximo: " + pesoMaximo);
+
+                ArticuloController controller = new ArticuloController(numeroElementos,pesoMaximo);
+                controller.setItems(panel.getArticulos());
+                controller.start();
+                controller.imprimirMatriz();
+
+            }catch(NumberFormatException e){
+                JOptionPane.showMessageDialog(null, "Ingrese solo numeros", "Error", JOptionPane.ERROR_MESSAGE);
+            }catch(NullPointerException a){
+                JOptionPane.showMessageDialog(null, "Ingrese primero los articulos", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
 
     }
