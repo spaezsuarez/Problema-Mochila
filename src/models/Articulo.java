@@ -37,12 +37,12 @@ public class Articulo {
         this.composicion = composicion;
     }
 
-    public String toString(){
+    /*public String toString(){
         return this.getCosto()+"\n"+
                this.getPeso()+"\n"+
                this.getNumeroArticulo();
        
-    }
+    }*/
 
     public Articulo clone(int valor){
 

@@ -1,90 +1,104 @@
 package controllers;
 
-import models.Articulo;
 import javax.swing.JTextField;
 
 public class ArticuloController {
-    
-    private Articulo[][] matriz;
-    private Articulo[] items;
 
-    public ArticuloController(int sizeRow,int sizeColumn){
+    private int[][] matriz;
+    private int[] pesos, costos;
 
-        matriz = new Articulo[sizeRow][sizeColumn];
-        items = new Articulo[sizeColumn-1];
-        setMatriz();
+    public ArticuloController(int sizeRow, int sizeColumn) {
+
+        matriz = new int[sizeRow+1][sizeColumn+4];
+        pesos = new int[sizeRow];
+        costos = new int[sizeRow];
     }
 
-    public void setMatriz(){
+    public void setMatriz() {
 
-        for(int i = 0; i < matriz[0].length; i++){
-            matriz[0][i] = new Articulo();
-            matriz[0][i].setCosto(0);
-            matriz[0][i].setPeso(0);
-            matriz[0][i].setNumeroArticulo(0);
+        for (int i = 0; i < matriz[0].length; i++) {
+            matriz[0][i] = 0;
         }
 
-        for(int j = 0; j < matriz.length; j++){
-            matriz[j][0] = new Articulo();
-            matriz[j][0].setCosto(0);
-            matriz[j][0].setPeso(0);
-            matriz[j][0].setNumeroArticulo(0);
-            matriz[j][0].setComposicion("0:0");
+        for (int j = 0; j < matriz.length; j++) {
+            matriz[j][3] = 0;
+
         }
 
-    }
-
-    public void setItems(JTextField[][] elements){
-        for(int i = 0; i < matriz.length-1; i++){
-            items[i] = new Articulo();
-            items[i].setPeso(Integer.parseInt(elements[0][i].getText()));
-            items[i].setCosto(Integer.parseInt(elements[1][i].getText()));
+        for (int j = 1; j < matriz.length; j++) {
+            matriz[j][0] = j ;
+            matriz[j][1] = pesos[j-1];
+            matriz[j][2] = costos[j-1];
         }
 
     }
 
-    public void start(){
-        int pesoMaximo = matriz[0].length;
-        for(int i = 1; i < matriz.length; i++){
-            for(int j = 1; j < matriz[i].length; j++){
-                if( items[i-1].getPeso() < pesoMaximo){
-                    matriz[i][j] = max(items[i-1].getCosto(),matriz[i-1][pesoMaximo-items[i-1].getPeso()],matriz[i-1][j]);
-                }else{
-                    matriz[i][j] = matriz[i-1][j];
+    public void setItems(JTextField[][] elements) {
+        for (int i = 0; i < elements[0].length; i++) {
+            costos[i] = Integer.parseInt(elements[1][i].getText());
+            pesos[i] = Integer.parseInt(elements[0][i].getText());
+        }
+
+    }
+
+    public void sort() {
+        for (int i = 0; i < pesos.length - 1; i++) {
+            for (int j = i + 1; j < pesos.length; j++) {
+                if (pesos[i] > pesos[j]) {
+                    int pesoTemp = pesos[i];
+                    pesos[i] = pesos[j];
+                    pesos[j] = pesoTemp;
+
+                    int costoTemp = costos[i];
+                    costos[i] = costos[j];
+                    costos[j] = costoTemp;
                 }
-                
-                //System.out.println("Valor objeto: " + items[i-1].getCosto());
             }
         }
+
+
     }
 
-    public Articulo max(int valor,Articulo ob1,Articulo ob2){
+    public void start() {
+       
+       for(int i = 1; i < matriz.length; i++){
+           for(int j = 3; j < matriz[0].length;j++){
+               if(matriz[i][1] <= j-3){
+                   int peso_i = matriz[i][1];
+                   int valor_i = matriz[i][2];
+                   matriz[i][j] = max(matriz[i-1][j],matriz[i-1][j-peso_i] + valor_i);
+               }else{
+                   matriz[i][j] = matriz[i-1][j];
+               }
+           }
+       }
+        
+        
+    }
 
-        int valorUno = valor + ob1.getCosto();
-        int valorDos = ob2.getCosto();
-
-        if(valorUno > valorDos){
-            return ob1.clone(valor);
+    public int max(int valorUno, int valorDos) {
+        if (valorUno > valorDos) {
+            return valorUno;
         }
-        return ob2.clone(valor);
+
+        return valorDos;
     }
 
-    public Articulo[][] getMatriz(){
-        return matriz;
-    }
-
-    public Articulo[] getItems(){
-        return items;
-    }
-
-    public void imprimirMatriz(){
-        for(int i = 0; i < matriz.length; i++){
-            for(int j = 0; j < matriz[i].length; j++){
-               System.out.print(matriz[i][j].getCosto() + " ");
+    public void imprimirMatriz() {
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[i].length; j++) {
+                System.out.print(matriz[i][j] + " ");
             }
             System.out.println("\n");
         }
 
+    }
+
+    public void imprimirItems() {
+        for (int i = 0; i < pesos.length; i++) {
+            System.out.print("(" + pesos[i] + "," + costos[i] + ") ");
+        }
+        System.out.println("\n");
     }
 
 }

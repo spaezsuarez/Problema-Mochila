@@ -18,9 +18,9 @@ public class Menu extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
     private final int ancho, alto;
 
-    private JButton btnStart, btnGrilla,btnLimpiar;
-    private JLabel title, txtLimite, txtNumeroArticulos;
-    private JTextField inputPesoMaximo, inputNumeroArticulos;
+    private final JButton btnStart, btnGrilla,btnLimpiar;
+    private final JLabel title, txtLimite, txtNumeroArticulos;
+    private final JTextField inputPesoMaximo, inputNumeroArticulos;
     private EntradaArticulo panel;
 
     public Menu() {
@@ -127,27 +127,27 @@ public class Menu extends JFrame implements ActionListener {
             }catch(NullPointerException e){}
 
         }else if(event.getSource() == btnStart){
+            ArticuloController controller = null;
 
             try{
 
-                numeroElementos = Integer.parseInt(inputNumeroArticulos.getText())+1;
-                pesoMaximo = Integer.parseInt(inputPesoMaximo.getText())+1;
+                numeroElementos = Integer.parseInt(inputNumeroArticulos.getText());
+                pesoMaximo = Integer.parseInt(inputPesoMaximo.getText());
 
-                System.out.println("elementos: " + numeroElementos);
-                System.out.println("Peso Maximo: " + pesoMaximo);
-
-                ArticuloController controller = new ArticuloController(numeroElementos,pesoMaximo);
+                controller = new ArticuloController(numeroElementos,pesoMaximo);
                 controller.setItems(panel.getArticulos());
+                controller.sort();
+                controller.setMatriz();
                 controller.start();
                 controller.imprimirMatriz();
+                
 
             }catch(NumberFormatException e){
                 JOptionPane.showMessageDialog(null, "Ingrese solo numeros", "Error", JOptionPane.ERROR_MESSAGE);
-            }catch(NullPointerException a){
-                JOptionPane.showMessageDialog(null, "Ingrese primero los articulos", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
 
     }
 
 }
+
