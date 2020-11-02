@@ -1,20 +1,26 @@
 package controllers;
 
 import javax.swing.JTextField;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ArticuloController {
 
-    private int[][] matriz;
-    private int[] pesos, costos;
+    private final int[][] matriz;
+    private final int[] pesos, costos;
+    private ArrayList<ArrayList<Integer>> results;
 
     public ArticuloController(int sizeRow, int sizeColumn) {
 
-        matriz = new int[sizeRow+1][sizeColumn+4];
+        matriz = new int[sizeRow + 1][sizeColumn + 4];
         pesos = new int[sizeRow];
         costos = new int[sizeRow];
+        results = new ArrayList<>();
+        
+
     }
 
-    public void setMatriz() {
+    public void initMatriz() {
 
         for (int i = 0; i < matriz[0].length; i++) {
             matriz[0][i] = 0;
@@ -26,9 +32,9 @@ public class ArticuloController {
         }
 
         for (int j = 1; j < matriz.length; j++) {
-            matriz[j][0] = j ;
-            matriz[j][1] = pesos[j-1];
-            matriz[j][2] = costos[j-1];
+            matriz[j][0] = j;
+            matriz[j][1] = pesos[j - 1];
+            matriz[j][2] = costos[j - 1];
         }
 
     }
@@ -56,24 +62,28 @@ public class ArticuloController {
             }
         }
 
-
     }
 
-    public void start() {
-       
-       for(int i = 1; i < matriz.length; i++){
-           for(int j = 3; j < matriz[0].length;j++){
-               if(matriz[i][1] <= j-3){
-                   int peso_i = matriz[i][1];
-                   int valor_i = matriz[i][2];
-                   matriz[i][j] = max(matriz[i-1][j],matriz[i-1][j-peso_i] + valor_i);
-               }else{
-                   matriz[i][j] = matriz[i-1][j];
-               }
-           }
-       }
+    public void start(JTextField[][] elements) {
+
+        setItems(elements);
+        sort();
+        initMatriz();
+
+        for (int i = 1; i < matriz.length; i++) {
+            for (int j = 3; j < matriz[0].length; j++) {
+                if (matriz[i][1] <= j - 3) {
+                    int peso_i = matriz[i][1];
+                    int valor_i = matriz[i][2];
+                    matriz[i][j] = max(matriz[i - 1][j], matriz[i - 1][j - peso_i] + valor_i);
+                } else {
+                    matriz[i][j] = matriz[i - 1][j];
+                }
+            }
+        }
         
-        
+        initResults(matriz[0].length-1, matriz.length-1);
+
     }
 
     public int max(int valorUno, int valorDos) {
@@ -83,22 +93,47 @@ public class ArticuloController {
 
         return valorDos;
     }
+    
+    public int[][] getMatriz(){
+        return this.matriz;
+    }
+    
+    public void initResults(int PesoMaximo,int numeroElementos){
+        int i = numeroElementos,k = PesoMaximo;
+        
+        while (i > 0 && k > 0) {
+            if(matriz[i][k] != matriz[i-1][k]){
+                int peso_i = matriz[i][1];
+                int valor_i = matriz[i][2];
+                int articulo_i = matriz[i][0];
+                
+                ArrayList<Integer> articulo = new ArrayList<>();
+                articulo.add(articulo_i);
+                articulo.add(peso_i);
+                articulo.add(valor_i);
+                
+                results.add(articulo);
 
-    public void imprimirMatriz() {
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[i].length; j++) {
-                System.out.print(matriz[i][j] + " ");
+                i -= 1;
+                k-= peso_i;
+            }else{
+                i -= 1;
             }
-            System.out.println("\n");
         }
-
+        
+        int suma = 0;
+        
+        for(int z = 0; z < results.size(); z++){
+            suma += results.get(z).get(2);
+        }
+        
+        results.add(new ArrayList<>(Arrays.asList(suma)));
+    }
+    
+    public ArrayList<ArrayList<Integer>> getResults(){
+        return results;
     }
 
-    public void imprimirItems() {
-        for (int i = 0; i < pesos.length; i++) {
-            System.out.print("(" + pesos[i] + "," + costos[i] + ") ");
-        }
-        System.out.println("\n");
-    }
+    
 
 }

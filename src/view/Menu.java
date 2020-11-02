@@ -135,13 +135,12 @@ public class Menu extends JFrame implements ActionListener {
                 pesoMaximo = Integer.parseInt(inputPesoMaximo.getText());
 
                 controller = new ArticuloController(numeroElementos,pesoMaximo);
-                controller.setItems(panel.getArticulos());
-                controller.sort();
-                controller.setMatriz();
-                controller.start();
-                controller.imprimirMatriz();
+                controller.start(panel.getArticulos());
                 
-
+                Resultado ventana = new Resultado(controller);
+                ventana.initTemplate();
+                
+                
             }catch(NumberFormatException e){
                 JOptionPane.showMessageDialog(null, "Ingrese solo numeros", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -150,4 +149,3 @@ public class Menu extends JFrame implements ActionListener {
     }
 
 }
-
