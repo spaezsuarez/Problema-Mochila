@@ -70,7 +70,7 @@ public class Resultado extends JFrame implements ActionListener {
                 //result[i][j].setBounds(j * 60 + 6, i * 60 + 6, 60, 60);
                 result[i][j].setPreferredSize(new Dimension(60,45));
                 result[i][j].setHorizontalAlignment(JLabel.CENTER);
-                result[i][j].setFont(new Font("Arial", Font.BOLD, 20));
+                result[i][j].setFont(new Font("Arial", Font.BOLD, 15));
                 result[i][j].setBorder(border);
                 panel.add(result[i][j]);
             }
@@ -95,7 +95,6 @@ public class Resultado extends JFrame implements ActionListener {
         setLayout(null);
         setTitle("Resultado");
         setSize(new Dimension(ancho, alto));
-        setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         initComponents();
         setLocationRelativeTo(null);

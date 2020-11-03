@@ -8,7 +8,7 @@ public class ArticuloController {
 
     private final int[][] matriz;
     private String[][] matrizComposicion;
-    private final int[] pesos, costos;
+    private final int[] pesos, costos,numeroArticulos;
     private ArrayList<ArrayList<Integer>> results;
 
     public ArticuloController(int sizeRow, int sizeColumn) {
@@ -17,6 +17,7 @@ public class ArticuloController {
         matrizComposicion = new String[sizeRow + 1][sizeColumn + 4];
         pesos = new int[sizeRow];
         costos = new int[sizeRow];
+        numeroArticulos = new int[sizeRow];
         results = new ArrayList<>();
 
     }
@@ -54,7 +55,7 @@ public class ArticuloController {
 
     public void initMatrizComposicion() {
         for (int i = 4; i < matrizComposicion[0].length; i++) {
-            matrizComposicion[1][i] = costos[0] + ":" + pesos[0];
+            matrizComposicion[1][i] = costos[0] + ":" +numeroArticulos[0];
         }
 
         for (int j = 0; j < matrizComposicion.length; j++) {
@@ -67,8 +68,8 @@ public class ArticuloController {
             matrizComposicion[j][2] = "";
         }
 
-        for (int i = 2; i < matriz.length; i++) {
-            for (int j = 4; j < matriz[0].length; j++) {
+        for (int i = 2; i < matrizComposicion.length; i++) {
+            for (int j = 4; j < matrizComposicion[0].length; j++) {
                 CalcularValorCelda(i,j);
             }
         }
@@ -81,15 +82,21 @@ public class ArticuloController {
         primerNumero = (matriz[i - 1][j]);
 
         try {
-            segundoNumero = matriz[i - 1][j - pesos[i-1]] + costos[i-1];
+            segundoNumero = matriz[i][j - pesos[i-1]] + costos[i-1];
         } catch (ArrayIndexOutOfBoundsException e) {
             segundoNumero = 0;
         }
 
         if (primerNumero > segundoNumero) {
             matrizComposicion[i][j] = (matrizComposicion[i - 1][j]);
-        } else {
-            matrizComposicion[i][j] = (matrizComposicion[i - 1][j - pesos[i-1]] + "+" + costos[i-1] + ":" + matriz[i][0]);
+        } else if(matriz[i][j] == 0){
+            matrizComposicion[i][j] = "0:0";
+        }else {
+            try{
+                matrizComposicion[i][j] = matrizComposicion[i-1][j-pesos[i-1]]+"+"+costos[i-1]+":"+matriz[i][0];
+            }catch(IndexOutOfBoundsException e){
+                System.out.println(e.getMessage());
+            }
         }
 
     }
@@ -98,6 +105,7 @@ public class ArticuloController {
         for (int i = 0; i < elements[0].length; i++) {
             costos[i] = Integer.parseInt(elements[1][i].getText());
             pesos[i] = Integer.parseInt(elements[0][i].getText());
+            numeroArticulos[i] = i+1;
         }
 
     }
