@@ -7,17 +7,30 @@ import java.util.Arrays;
 public class ArticuloController {
 
     private final int[][] matriz;
+    private String[][] matrizComposicion;
     private final int[] pesos, costos;
     private ArrayList<ArrayList<Integer>> results;
 
     public ArticuloController(int sizeRow, int sizeColumn) {
 
         matriz = new int[sizeRow + 1][sizeColumn + 4];
+        matrizComposicion = new String[sizeRow + 1][sizeColumn + 4];
         pesos = new int[sizeRow];
         costos = new int[sizeRow];
         results = new ArrayList<>();
-        
 
+    }
+
+    public int[][] getMatriz() {
+        return this.matriz;
+    }
+
+    public String[][] getMatrizComposicion() {
+        return matrizComposicion;
+    }
+
+    public ArrayList<ArrayList<Integer>> getResults() {
+        return results;
     }
 
     public void initMatriz() {
@@ -35,6 +48,48 @@ public class ArticuloController {
             matriz[j][0] = j;
             matriz[j][1] = pesos[j - 1];
             matriz[j][2] = costos[j - 1];
+        }
+
+    }
+
+    public void initMatrizComposicion() {
+        for (int i = 4; i < matrizComposicion[0].length; i++) {
+            matrizComposicion[1][i] = costos[0] + ":" + pesos[0];
+        }
+
+        for (int j = 0; j < matrizComposicion.length; j++) {
+            matrizComposicion[j][3] = "0:0";
+        }
+
+        for (int j = 0; j < matrizComposicion.length; j++) {
+            matrizComposicion[j][0] = "";
+            matrizComposicion[j][1] = "";
+            matrizComposicion[j][2] = "";
+        }
+
+        for (int i = 2; i < matriz.length; i++) {
+            for (int j = 4; j < matriz[0].length; j++) {
+                CalcularValorCelda(i,j);
+            }
+        }
+
+    }
+
+    public void CalcularValorCelda(int i, int j) {
+        int primerNumero, segundoNumero;
+
+        primerNumero = (matriz[i - 1][j]);
+
+        try {
+            segundoNumero = matriz[i - 1][j - pesos[i-1]] + costos[i-1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            segundoNumero = 0;
+        }
+
+        if (primerNumero > segundoNumero) {
+            matrizComposicion[i][j] = (matrizComposicion[i - 1][j]);
+        } else {
+            matrizComposicion[i][j] = (matrizComposicion[i - 1][j - pesos[i-1]] + "+" + costos[i-1] + ":" + matriz[i][0]);
         }
 
     }
@@ -81,59 +136,48 @@ public class ArticuloController {
                 }
             }
         }
-        
-        initResults(matriz[0].length-1, matriz.length-1);
-
+        initResults(matriz[0].length - 1, matriz.length - 1);
+        initMatrizComposicion();
     }
 
     public int max(int valorUno, int valorDos) {
         if (valorUno > valorDos) {
             return valorUno;
         }
-
         return valorDos;
     }
-    
-    public int[][] getMatriz(){
-        return this.matriz;
-    }
-    
-    public void initResults(int PesoMaximo,int numeroElementos){
-        int i = numeroElementos,k = PesoMaximo;
-        
+
+    public void initResults(int PesoMaximo, int numeroElementos) {
+        int i = numeroElementos, k = PesoMaximo;
+
         while (i > 0 && k > 0) {
-            if(matriz[i][k] != matriz[i-1][k]){
+            if (matriz[i][k] != matriz[i - 1][k]) {
                 int peso_i = matriz[i][1];
                 int valor_i = matriz[i][2];
                 int articulo_i = matriz[i][0];
-                
+
                 ArrayList<Integer> articulo = new ArrayList<>();
                 articulo.add(articulo_i);
                 articulo.add(peso_i);
                 articulo.add(valor_i);
-                
+
                 results.add(articulo);
 
                 i -= 1;
-                k-= peso_i;
-            }else{
+                k -= peso_i;
+            } else {
                 i -= 1;
             }
         }
-        
-        int suma = 0;
-        
-        for(int z = 0; z < results.size(); z++){
-            suma += results.get(z).get(2);
-        }
-        
-        results.add(new ArrayList<>(Arrays.asList(suma)));
-    }
-    
-    public ArrayList<ArrayList<Integer>> getResults(){
-        return results;
-    }
 
-    
+        int sumaValores = 0, sumPeso = 0;
+
+        for (int z = 0; z < results.size(); z++) {
+            sumaValores += results.get(z).get(2);
+            sumPeso += results.get(z).get(1);
+        }
+
+        results.add(new ArrayList<>(Arrays.asList(sumPeso, sumaValores)));
+    }
 
 }

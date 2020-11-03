@@ -143,6 +143,8 @@ public class Menu extends JFrame implements ActionListener {
                 
             }catch(NumberFormatException e){
                 JOptionPane.showMessageDialog(null, "Ingrese solo numeros", "Error", JOptionPane.ERROR_MESSAGE);
+            }catch(NullPointerException  a){
+                JOptionPane.showMessageDialog(null, "Ingrese primero los articulos", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
 
